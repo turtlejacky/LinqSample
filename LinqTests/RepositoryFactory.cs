@@ -4,7 +4,7 @@ namespace LinqTests
 {
     internal class RepositoryFactory
     {
-        public IEnumerable<Product> GetProducts()
+        public static IEnumerable<Product> GetProducts()
         {
             return new List<Product>
             {
@@ -15,10 +15,11 @@ namespace LinqTests
                 new Product{Id=5, Cost=51, Price=510, Supplier="Momo" },
                 new Product{Id=6, Cost=61, Price=610, Supplier="Momo" },
                 new Product{Id=7, Cost=71, Price=710, Supplier="Yahoo" },
+                new Product{Id=8, Cost=18, Price=780, Supplier="Yahoo" },
             };
         }
 
-        public IEnumerable<Employee> GetEmployees()
+        public static IEnumerable<Employee> GetEmployees()
         {
             return new List<Employee>
             {

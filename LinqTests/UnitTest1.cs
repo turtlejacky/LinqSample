@@ -1,6 +1,7 @@
 ﻿using ExpectedObjects;
 using LinqTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 
 namespace LinqTests
@@ -26,9 +27,15 @@ namespace LinqTests
 
 internal class WithoutLinq
 {
-    public static List<Product> FindProductByPrice(IEnumerable<Product> products, int lowBoundary, int highBoundary)
+    public static IEnumerable<Product> FindProductByPrice(IEnumerable<Product> products, int lowBoundary, int highBoundary)
     {
-        throw new System.NotImplementedException();
+        // ReSharper disable once GenericEnumeratorNotDisposed
+
+        foreach (var product in products)
+        {
+        }
+
+        throw new NotImplementedException();
     }
 }
 

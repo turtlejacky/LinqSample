@@ -14,7 +14,7 @@ namespace LinqTests
         public void find_products_that_price_between_200_and_500()
         {
             var products = RepositoryFactory.GetProducts().ToList();
-            var actual = products.FindProduct(product => product.IsTopSaleProducts());
+            var actual = products.JoeyWhere(product => product.IsTopSaleProducts());
 
             var expected = new List<Product>()
             {
@@ -25,7 +25,6 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
-
 
         [TestMethod]
         public void find_products_that_price_between_200_and_500_by_where()
@@ -41,6 +40,119 @@ namespace LinqTests
             };
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+
+        [TestMethod]
+        public void ToHttps()
+        {
+            var urls = RepositoryFactory.GetUrls();
+            IEnumerable<string> actual = WithoutLinq.ToHttps(urls);
+            var expected = new List<string>
+            {
+                "https://tw.yahoo.com",
+                "https://facebook.com",
+                "https://twitter.com",
+                "https://github.com",
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+
+        [TestMethod]
+        public void JoeyWhere_JoeySelect()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var sqlActual = from e in employees
+                where e.Age < 25
+                select $"{e.Role}:{e.Name}";
+
+            var actual = employees
+                .JoeyWhere(e => e.Age < 25)
+                .JoeySelect(e => $"{e.Role}:{e.Name}");
+
+            foreach (var titleName in actual)
+            {
+                Console.WriteLine(titleName);
+            }
+
+            var expected = new List<string>()
+            {
+                "OP:Andy",
+                "Engineer:Frank",
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+
+        [TestMethod]
+        public void Take()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.JoeyTake(employees, 2);
+            var expected = new List<Employee>
+            {
+                new Employee {Name = "Joe", Role = RoleType.Engineer, MonthSalary = 100, Age = 44, WorkingYear = 2.6},
+                new Employee {Name = "Tom", Role = RoleType.Engineer, MonthSalary = 140, Age = 33, WorkingYear = 2.6},
+            };
+
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
+        }
+
+        [TestMethod]
+        public void Skip()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.JoeySkip(employees, 6);
+            var expected = new List<Employee>
+            {
+                new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
+                new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
+            };
+
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
+        }
+
+
+        [TestMethod]
+        public void Paging_GetSum()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.GetSum(employees, 3, x => x.MonthSalary);
+            var expected = new int[] {620, 540, 370};
+            expected.ToExpectedObject().ShouldEqual(act.ToArray());
+        }
+
+
+        [TestMethod]
+        public void TakeWhile()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.TakeWhile(employees, 2, x => x.MonthSalary > 150);
+            var expected = new List<Employee>
+            {
+                new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
+                new Employee {Name = "Bas", Role = RoleType.Engineer, MonthSalary = 280, Age = 36, WorkingYear = 2.6},
+            };
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
+        }
+
+        [TestMethod]
+        public void SkipWhile()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var act = WithoutLinq.SkipWhile(employees, 3, x => x.MonthSalary < 150);
+            var expected = new List<Employee>
+            {
+                new Employee {Name = "Kevin", Role = RoleType.Manager, MonthSalary = 380, Age = 55, WorkingYear = 2.6},
+                new Employee {Name = "Bas", Role = RoleType.Engineer, MonthSalary = 280, Age = 36, WorkingYear = 2.6},
+                new Employee {Name = "Mary", Role = RoleType.OP, MonthSalary = 180, Age = 26, WorkingYear = 2.6},
+                new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
+                new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
+            };
+            expected.ToExpectedObject().ShouldEqual(act.ToList());
         }
     }
 }
